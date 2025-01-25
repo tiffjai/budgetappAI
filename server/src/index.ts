@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { config } from './config/config';
 import authRoutes from './routes/auth.routes';
 import plaidRoutes from './routes/plaid.routes';
+import adviceRoutes from './routes/advice.routes';
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/plaid', plaidRoutes);
+app.use('/api/advice', adviceRoutes);
 
 // Basic health check route
 app.get('/health', (req, res) => {
