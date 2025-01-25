@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { config } from './config/config';
 import authRoutes from './routes/auth.routes';
@@ -15,11 +14,6 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
-// Database connection
-mongoose.connect(config.mongoUri)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
 
 // Routes
 app.use('/api/auth', authRoutes);
