@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+interface RegisterResponse {
+  user: any;
+  token: string;
+}
+
+interface PlaidLinkTokenResponse {
+  link_token: string;
+}
+
 const API_URL = 'http://localhost:3000/api';
 let authToken: string;
 
@@ -9,13 +18,13 @@ const testEndpoints = async () => {
 
     // Test health check
     console.log('1. Testing health check endpoint...');
-    const healthResponse = await axios.get(`${API_URL.replace('/api', '')}/health`);
+    const healthResponse: any = await axios.get(`${API_URL.replace('/api', '')}/health`);
     console.log('Health check response:', healthResponse.data);
     console.log('✅ Health check successful\n');
 
     // Test registration
     console.log('2. Testing user registration...');
-    const registerResponse = await axios.post(`${API_URL}/auth/register`, {
+    const registerResponse: any = await axios.post(`${API_URL}/auth/register`, {
       email: 'test@example.com',
       password: 'testpassword123',
       name: 'Test User'
@@ -26,7 +35,7 @@ const testEndpoints = async () => {
 
     // Test Plaid link token creation
     console.log('3. Testing Plaid link token creation...');
-    const plaidResponse = await axios.post(
+    const plaidResponse: any = await axios.post(
       `${API_URL}/plaid/create-link-token`,
       {},
       {
@@ -43,9 +52,11 @@ const testEndpoints = async () => {
         headers: { Authorization: `Bearer ${authToken}` }
       });
     } catch (error: any) {
-      if (error.response?.status === 400 && error.response?.data?.error === 'No linked bank account found') {
+      if (error?.response?.status === 400 && error?.response?.data?.error === 'No linked bank account found') {
         console.log('✅ Financial advice endpoint correctly requires bank connection\n');
       } else {
+        console.error('Error during financial advice test:', error);
+        console.error('Response data:', error?.response?.data);
         throw error;
       }
     }
@@ -56,9 +67,9 @@ const testEndpoints = async () => {
     console.log('- OpenAI integration requires a valid API key');
     console.log('- Bank account connection requires completing the Plaid Link flow');
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during testing:', error);
-    if (axios.isAxiosError(error)) {
+    if (error?.response) {
       console.error('Response data:', error.response?.data);
     }
   }
