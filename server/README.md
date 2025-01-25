@@ -16,7 +16,6 @@ cp .env.example .env
 
 3. Configure environment variables in `.env`:
 - `PORT`: Server port (default: 3000)
-- `MONGODB_URI`: MongoDB connection string
 - `JWT_SECRET`: Secret key for JWT token generation
 - `PLAID_CLIENT_ID`: Your Plaid client ID
 - `PLAID_SECRET`: Your Plaid secret key
@@ -52,7 +51,32 @@ npm start
 
 - `GET /api/auth/profile`
   - Get user profile
-  - Requires authentication header: `Authorization: Bearer <token>`
+  - Requires authentication
+
+### Plaid Integration
+
+- `POST /api/plaid/create-link-token`
+  - Create a Plaid Link token for bank account connection
+  - Requires authentication
+
+- `POST /api/plaid/set-access-token`
+  - Exchange public token for access token
+  - Body: `{ "public_token": string }`
+  - Requires authentication
+
+- `GET /api/plaid/transactions`
+  - Get user's transactions for the last 30 days
+  - Requires authentication
+
+### Financial Advice
+
+- `GET /api/advice/analysis`
+  - Get AI-powered analysis of spending patterns and financial advice
+  - Requires authentication and connected bank account
+
+- `GET /api/advice/savings-challenge`
+  - Get personalized 30-day savings challenge
+  - Requires authentication and connected bank account
 
 ### Health Check
 
@@ -64,7 +88,7 @@ npm start
 
 Protected routes require a JWT token in the Authorization header:
 ```
-Authorization: Bearer <your-token>
+Authorization: Bearer <token>
 ```
 
 ## Error Handling
@@ -79,15 +103,28 @@ The API returns appropriate HTTP status codes and error messages:
 ## Development Notes
 
 - TypeScript for type safety
-- MongoDB with Mongoose for data storage
 - JWT for authentication
 - Express.js middleware for security (helmet, cors)
+- In-memory storage for development (can be extended to use MongoDB)
+- Plaid integration for bank account data
+- OpenAI integration for financial advice
 - Error handling middleware
 - Environment-based configuration
 
+## Features
+
+- User authentication and authorization
+- Bank account connection via Plaid
+- Transaction history retrieval
+- AI-powered financial analysis
+- Personalized savings challenges
+- Secure API endpoints
+- Comprehensive error handling
+
 ## Coming Soon
 
-- Plaid integration for bank account linking
-- Transaction synchronization
-- OpenAI integration for financial advice
-- Budget analysis and recommendations
+- Transaction categorization improvements
+- Budget goal setting
+- Spending alerts
+- Investment advice
+- Detailed financial reports

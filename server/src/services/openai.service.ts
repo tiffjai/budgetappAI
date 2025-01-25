@@ -2,19 +2,25 @@ import OpenAI from 'openai';
 import { config } from '../config/config';
 
 class OpenAIService {
-  private client: OpenAI;
-
-  constructor() {
-    this.client = new OpenAI({
+  private getClient(): OpenAI {
+    if (!config.openai.apiKey) {
+      throw new Error('OpenAI API key is not configured');
+    }
+    return new OpenAI({
       apiKey: config.openai.apiKey
     });
   }
 
   async analyzeTransactions(transactions: any[]) {
     try {
+      if (!config.openai.apiKey) {
+        return "AI analysis is not available - OpenAI API key not configured";
+      }
+
+      const client = this.getClient();
       const prompt = this.createTransactionAnalysisPrompt(transactions);
       
-      const response = await this.client.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
@@ -33,6 +39,9 @@ class OpenAIService {
       return response.choices[0].message.content;
     } catch (error) {
       console.error('Error analyzing transactions:', error);
+      if (error instanceof Error && error.message.includes('API key')) {
+        return "AI analysis is not available - OpenAI API configuration error";
+      }
       throw error;
     }
   }
@@ -72,9 +81,14 @@ class OpenAIService {
 
   async getSavingsChallenge(transactions: any[]) {
     try {
+      if (!config.openai.apiKey) {
+        return "Savings challenge is not available - OpenAI API key not configured";
+      }
+
+      const client = this.getClient();
       const monthlySpending = this.calculateMonthlySpending(transactions);
       
-      const response = await this.client.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
@@ -106,6 +120,9 @@ class OpenAIService {
       return response.choices[0].message.content;
     } catch (error) {
       console.error('Error generating savings challenge:', error);
+      if (error instanceof Error && error.message.includes('API key')) {
+        return "Savings challenge is not available - OpenAI API configuration error";
+      }
       throw error;
     }
   }
