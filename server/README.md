@@ -29,6 +29,24 @@ Start the development server with hot reload:
 npm run dev
 ```
 
+## Testing
+
+Run the API endpoint tests:
+```bash
+# Make sure the server is running first
+npm run dev
+
+# In a separate terminal
+npm run test:endpoints
+```
+
+The test script will:
+1. Check the server health endpoint
+2. Test user registration
+3. Verify Plaid link token creation
+4. Test financial advice endpoints
+5. Provide feedback on required API credentials
+
 ## Production
 
 Build and start the production server:
